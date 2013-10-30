@@ -54,7 +54,10 @@ server.on('request', function (request, response) {
         response.end(data);
     });
 });
-
+io.configure(function () { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
+});
 // 소켓 서버 이벤트를 연결합니다.
 io.sockets.on('connection', function (socket) {
     // join 이벤트
