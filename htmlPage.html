@@ -14,7 +14,9 @@
             var socket = io.connect('http://haeyeonchat.herokuapp.com/');
             // 이벤트를 연결합니다.
             socket.on('message', function (data) {
-                // 추가할 문자열을 만듭니다.
+              alert(data.name);
+				
+				// 추가할 문자열을 만듭니다.
                 var output = '';
                 output += '<li>';
                 output += ' <h3>' + data.name + '</h3>';
@@ -25,23 +27,16 @@
                 $(output).prependTo('#content');
                 $('#content').listview('refresh');
             });
-				//데이터 전송
-				socket.emit('setname',name);
-				//데이터 전달 받기
-				socket.on('responsename',function(data){
-				alert(data);
-				});
-
-			// 버튼을 클릭할 때
+            // 버튼을 클릭할 때
             $('button').click(function () {
                 socket.emit('message', {
                     name: $('#name').val(),
                     message: $('#message').val(),
                     date: new Date().toUTCString()
                 });
-				socket.emit('getname');
-				});
 
+
+            });
         });
     </script>
 </head>
