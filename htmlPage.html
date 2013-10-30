@@ -30,19 +30,17 @@
                 $('#content').listview('refresh');
             });
             // 버튼을 클릭할 때
-            $('button').click(function () {
+            $('button,#userBtn').click(function () {
                 socket.emit('message', {
                     name: $('#name').val(),
                     message: $('#message').val(),
                     date: new Date().toUTCString()
                 });
-            });
-			//사용자 정보 받기
-			$('#userBtn').click(function () {
-                socket.emit('getuser', {
+				 socket.emit('getuser', {
                     name: $('#name').val(),
                 });
             });
+			
 
 		
 		});
