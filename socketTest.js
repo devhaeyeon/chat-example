@@ -2,6 +2,9 @@
 var app = require('http').createServer(handler)
 var io = require('socket.io').listen(app);
   var port = process.env.PORT || 5000;
+var nicklist = {};
+var nickidlist = {};
+io.set('log level',2);
 
 app.listen(port);
 
