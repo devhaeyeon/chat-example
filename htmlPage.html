@@ -30,6 +30,7 @@
 				//데이터 전달 받기
 				socket.on('responsename',function(data){
 				alert(data);
+            });
 
 			// 버튼을 클릭할 때
             $('button').click(function () {
@@ -41,7 +42,6 @@
 				socket.emit('getname');
 				});
 
-            });
         });
     </script>
 </head>
