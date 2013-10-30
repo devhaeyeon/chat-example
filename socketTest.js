@@ -31,20 +31,12 @@ io.sockets.on('connection', function (socket) {
         socket.set('room', data);
     });
 
+    // message 이벤트
     socket.on('message', function (data) {
         socket.get('room', function (error, room) {
             io.sockets.in(room).emit('message', data);
         });
     });
-
-	socket.on('setname',function(data){
-		socket.set('name',data);
-	});
-	socket.on('getname',function(data){
-		socket.get('name',function(error,data){
-		socket.emit('responsename',data);
-		});
-	});
 
 });
 /*
