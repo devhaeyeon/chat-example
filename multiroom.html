@@ -1,73 +1,246 @@
 <!DOCTYPE html>
-<!-- 
-(c) Copyright 2011 Aditya Ravi Shankar (www.adityaravishankar.com). All Rights Reserved. 
-NowJS and Node.js Tutorial – Creating a multi room chat client
-http://www.adityaravishankar.com/2011/10/nowjs-node-js-tutorial-creating-multi-room-chat-server/
 
--->
-<html lang="en">
+<html>
+
 <head>
-<meta charset="utf-8">
-<title>nowjs Multi Room Chat Server</title>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-<script src="/nowjs/now.js"></script>
 
-<script>
-$(document).ready(function(){
-	now.receiveMessage = function(name, message){
-		$("#messages").append("<br>" + name + ": " + message);
+	<meta charset='UTF-8' />
+
+	<title>:::::NODE:::CHATTING:::::::</title>
+
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+
+	<style type="text/css">
+
+		body{margin:0;padding:0;}
+
+		#wrap{ width:100%; height:100%; border:0px solid #aaa; }
+
+		#wrap > header { background-color:#545765; border:1px solid #aaa }
+
+		#wrap > header > h1{ font-size:1.0em; text-align:center; color:#FFF; }
+
+		#wrap > section{height:100%; border:0px solid #F00}
+
+		#wrap > footer{ background-color:#545765; border:1px solid #FFF; font-size:0.8em; color:#FFF; text-align:center; padding:5px 0; }
+
+		#door{ width:100%; height:150px; }
+
+		#door p{ margin:5px ; width:97%;}
+
+		#uid{width:99%;}
+
+		#enter{ border:1px solid #aaa; font-size:1.0em; background-color:#545765; color:#FFF; width:100%; height:50px; }
+
+		#msg{ width:90%; height:300px; overflow-y:scroll; margin:auto; border:1px solid #aaa; }
+
+		#chat{display:none;}
+
+		#edit{ text-align:center; }
+
+		#txt{ width:75%; }
+
+	</style>
+
+	<script type="text/javascript" src='/socket.io/socket.io.js'></script>
+
+	<script type="text/javascript">
+
+	$(function(){
+
+		var nick_name = '';
+
+		var socket = io.connect();
+
+		$("#enter").click(function(){
+
+			nick_name = $('#uid').val();
+
+			if(nick_name == "")
+
+			{
+
+				alert('아이디를 입력하세요');
+
+			}
+
+			else
+
+			{
+
+				socket.emit('systemIn',{
+
+					name : nick_name
+
+				});
+
+
+
+
+				$("#door").slideUp(200).delay(200,function(){
+
+					$("#chat").slideDown(200);
+
+				});
+
+			}
+
+				
+
+		});
+
+
+
+		socket.on('systemList',function(data){
+
+			$("#nick_lst").empty();
+
+			$("#nick_lst").append('<option value="poblic">모두</option>');
+
+			for (var i in data) {
+
+				$("#nick_lst").append('<option value="'+data[i]+'">'+data[i]+'</option>');
+
+			}
+
+		});
+
+		
+
+		socket.on('systemIn',function(data){
+
+			$('#msg').append('<dd>'+data.name+'님이 입장하셨습니다.</dd>');
+
+			scrollDonw();
+
+		});
+
+
+
+		socket.on('systemOut',function(data){
+
+			$('#msg').append('<dd>'+data.name+'님이 퇴장하셨습니다.</dd>');
+
+			scrollDonw();
+
+		});
+
+
+
+		socket.on('message',function(data){
+
+			$('#msg').append('<dt>'+data.name+' : </dt><dd>'+data.message+'</dd>');
+
+			scrollDonw();
+
+		});
+
+
+
+		$("#txt").keypress(function(ent){
+
+			if(ent.which == 13){
+
+				$("#input").click();
+
+			}
+
+		});
+
+		
+
+		$("#input").bind('click',function(){
+
+			socket.emit('message',{
+
+				type : $("#nick_lst").val(),
+
+				name : nick_name,
+
+				message : $("#txt").val()
+
+			});
+
+			$("#txt").val('');
+
+		});
+
+	});
+
+	function scrollDonw()
+
+	{
+
+		$("#msg").animate({'scrollTop':$("#msg")[0].scrollHeight},200);
+
 	}
 
-	// Send message to people in the same group
-	$("#send-button").click(function(){
-		now.distributeMessage($("#text-input").val());
-		$("#text-input").val("");
-	});
-
-	now.name = prompt("What's your name?", "");
-
-	// on establishing 'now' connection, set server room and allow message sending
-	now.ready(function(){
-		// Pick up list of available chatrooms from server and populate dropdown 
-		setServerRoomFromList(now.serverRoomsList);
-		
-		// By default pick the first chatroom 
-		now.changeRoom($('#server-room').val());
-		// Connection established and room set; allow user to start sending messages
-		$("#send-button").removeAttr('disabled');
-	});
-	
-	// On change of drop down, clear text and change server room
-	$('#server-room').change(function(){
-		$("#messages").html('');
-		now.changeRoom($('#server-room').val());
-	});
-
-});
-
-// populate the #server-room dropdown 
-function setServerRoomFromList(roomList){
-	$('#server-room').empty();
-	$.each(roomList, function(key, value)
-	{   
-	     $('#server-room').
-	          append($("<option></option>").
-	          attr("value",key).
-	          text(value)); 
-	});
-}
-	
-</script>
+	</script>
 
 </head>
 
 <body>
-  
-  <div id="messages"></div>
-  <input type="text" id="text-input">
-  <input type="submit" value="Send" disabled id="send-button">
-  <select id="server-room">
-  	<option value="connecting" selected>Connecting...</option>	
-  </select>
+
+<section id="wrap">
+
+	<header>
+
+		<h1>NODE.JS톡</h1>
+
+	</header>
+
+	<section>
+
+		<div id="door">
+
+			<p style='margin-top:50px;'>※닉네임을 설정하여 주십시오.</p>
+
+			<p>
+
+				<input type="text" name='uid' id="uid" value="" />
+
+			</p>
+
+			<p>
+
+				<input type="button" id='enter' value="입장하기" /> 
+
+			</p>
+
+		</div>
+
+		<div id="chat">
+
+			<dl id="msg">
+
+			</dl>
+
+			<div id="edit">
+
+				<select name="nick_lst" id="nick_lst">
+
+					<option value="poblic">모두</option>
+
+				</select>
+
+				<input type="text" name="txt" id="txt" />
+
+				<button id="input">입력</button>
+
+			</div>
+
+		</div>
+
+	</section>
+
+	<footer>
+
+		FOOTER
+
+	</footer>
+
+</section>
+
 </body>
+
 </html>

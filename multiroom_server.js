@@ -1,39 +1,91 @@
-// (c) Copyright 2011 Aditya Ravi Shankar (www.adityaravishankar.com). All Rights Reserved. 
-// NowJS and Node.js Tutorial – Creating a multi room chat client
-// http://www.adityaravishankar.com/2011/10/nowjs-node-js-tutorial-creating-multi-room-chat-server/
   var port = process.env.PORT || 5000;
-var html = require('fs').readFileSync('multiroom.html');
-var server = require('http').createServer(function(req, res){
-    res.end(html);
+var server = require('http').createServer(function(req,res){
+
+	fs.readFile('multiroom.html',function(error,data){
+
+		res.writeHead(200,{'Content-Type':'text/html'});
+
+		res.end(data);
+
+	});
+
+}).listen(port,function(){
+
+	console.log('Server Running Start');
+
+});;
+
+var io     = require('socket.io').listen(server);
+var nicklist = {};
+
+var nickidlist = {};
+
+io.set('log level',2);
+
+//소켓 서버 이벤트를 연결합니다.
+
+io.sockets.on('connection',function(socket){
+
+	socket.on('systemIn',function(data){
+
+		if(data.name)
+
+		{
+
+			//최초 입장시 아이디/소켓코드 저장
+
+			nicklist[data.name] = socket.nickname = data.name;
+
+			nickidlist[data.name] = socket.id;
+
+			
+
+			io.sockets.emit('systemIn',data);
+
+			io.sockets.emit('systemList',nicklist);
+
+		}
+
+	});
+
+	socket.on('message',function(data){
+
+		if(data.type == 'poblic')
+
+		{
+
+			io.sockets.emit('message',data);
+
+		}
+
+		else
+
+		{
+
+			//귓속말 처리
+
+			io.sockets.sockets[nickidlist[data.name]].emit('message',data);
+
+			io.sockets.sockets[nickidlist[data.type]].emit('message',data);
+
+		}
+
+	});
+
+	//퇴장 처리
+
+	socket.on('disconnect',function(){
+
+		if(socket.nickname){
+
+			socket.broadcast.emit('systemOut',{name:socket.nickname});
+
+			delete nicklist[socket.nickname];
+
+			io.sockets.emit('systemList',nicklist);
+
+		}
+
+	});
+
 });
-server.listen(port);
-
-var nowjs = require("now");
-var everyone = nowjs.initialize(server);
-
-// List of available rooms
-everyone.now.serverRoomsList = {'room1':'Room 1','room2':'Room 2','room3':'Room 3'};
-
-// Send message to everyone on the users group
-everyone.now.distributeMessage = function(message){
-    //console.log('Received message from '+this.now.name +' in serverroom '+this.now.serverRoom);
-    var group = nowjs.getGroup(this.now.serverRoom);
-    group.now.receiveMessage(this.now.name+'@'+this.now.serverRoom, message);
-};
-
-everyone.now.changeRoom = function(newRoom){
-    var oldRoom = this.now.serverRoom;
-    console.log('Changed user '+this.now.name + ' from '+oldRoom + ' to '+newRoom);
-    //if old room is not null; then leave the old room
-    if(oldRoom){
-        var oldGroup = nowjs.getGroup(oldRoom);
-        oldGroup.removeUser(this.user.clientId);
-        // Tell everyone he left :)
-        oldGroup.now.receiveMessage('SERVER@'+oldRoom, this.now.name + ' has left the room and gone to '+newRoom);
-    }
-    var newGroup = nowjs.getGroup(newRoom);
-    newGroup.addUser(this.user.clientId);
-    // Tell everyone he joined
-    newGroup.now.receiveMessage('SERVER@'+newRoom, this.now.name + ' has joined the room');
-    this.now.serverRoom = newRoom;
-};
