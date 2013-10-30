@@ -47,8 +47,6 @@
             });
         });
     </script>
-
-
 	-->
     <script>
         window.onload = function (){
@@ -67,19 +65,28 @@
                 output += '</li>';
                 // 문서 객체를 추가합니다.
                 $(output).prependTo('#content');
+				$('#content').listview('refresh');
             });
             // 문서 객체 이벤트를 연결합니다.
             document.getElementById('button').onclick = function () {
-                socket.emit('message',{
+				
+				if($('#message').val()==="")
+				{
+					alert('내용을 입력해주세요.');
+				}
+				else
+				{
+					socket.emit('message', {
 						name: $('#name').val(),
 						message: $('#message').val(),
 						date: new Date().toUTCString()
 					});
+					$('#message').val(""); 
+				}
+
             };
         };
     </script>
-
-
 </head>
 <body>
     <div data-role="page">
@@ -100,7 +107,6 @@
             <input id="message" />
             <button id="button">입력</button>
             <ul id="content" data-role="listview" data-inset="true">
-
             </ul>
         </div>
     </div>
