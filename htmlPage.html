@@ -33,7 +33,7 @@
             });
 
 			// 버튼을 클릭할 때
-            $('button').click(function () {
+            $('#button').click(function () {
                /* socket.emit('message', {
                     name: $('#name').val(),
                     message: $('#message').val(),
@@ -53,7 +53,7 @@
         <div data-role="content">
             <h3>Nick Name</h3>
             <input id="name" />
-            <a data-role="button" href="#chatpage">Start Chat</a>
+            <a data-role="button" href="#chatpage" id="button">Start Chat</a>
         </div>
     </div>
     <div data-role="page" id="chatpage">
