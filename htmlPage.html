@@ -12,11 +12,13 @@
         $(document).ready(function () {
             // 변수를 선언합니다.
             var socket = io.connect('http://haeyeonchat.herokuapp.com/');
-            // 이벤트를 연결합니다.
-            socket.on('message', function (data) {
-              alert(data.name);
-				
-				// 추가할 문자열을 만듭니다.
+           
+			// 이벤트를 연결합니다.
+			socket.on('getuser',function(data){
+				alert(data.name);
+			});
+			socket.on('message', function (data) {
+ 				// 추가할 문자열을 만듭니다.
                 var output = '';
                 output += '<li>';
                 output += ' <h3>' + data.name + '</h3>';
@@ -34,10 +36,16 @@
                     message: $('#message').val(),
                     date: new Date().toUTCString()
                 });
-
-
             });
-        });
+			//사용자 정보 받기
+			$('#userBtn').click(function () {
+                socket.emit('getuser', {
+                    name: $('#name').val(),
+                });
+            });
+
+		
+		});
     </script>
 </head>
 <body>
@@ -48,7 +56,7 @@
         <div data-role="content">
             <h3>Nick Name</h3>
             <input id="name" />
-            <a data-role="button" href="#chatpage">Start Chat</a>
+            <a data-role="button" href="#chatpage" id="userBtn">Start Chat</a>
         </div>
     </div>
     <div data-role="page" id="chatpage">
