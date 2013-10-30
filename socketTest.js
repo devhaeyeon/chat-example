@@ -49,7 +49,7 @@ server.listen(port, function () {
 // 웹 서버 이벤트를 연결합니다.
 server.on('request', function (request, response) {
     // HTMLPage.htm 파일을 읽습니다.
-    fs.readFile('htmlPage.htm', function (error, data) {
+    fs.readFile('htmlPage.html', function (error, data) {
         response.writeHead(200, { 'Content-Type': 'text/html' });
         response.end(data);
     });
