@@ -1,4 +1,5 @@
   var port = process.env.PORT || 5000;
+  var fs = require('fs');
 var server = require('http').createServer(function(req,res){
 
 	fs.readFile('multiroom.html',function(error,data){
