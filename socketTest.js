@@ -1,6 +1,6 @@
   var port = process.env.PORT || 5000;
 
-/*app.listen(port);
+app.listen(port);
 
 function handler (req, res) {
   fs.readFile( 'htmlPage.html',
@@ -22,9 +22,16 @@ io.configure(function () {
 
 
 io.sockets.on('connection', function (socket) {
+    // join 이벤트
+    socket.on('join', function (data) {
+        socket.join(data);
+        socket.set('room', data);
+    });
+
     socket.on('message', function (data) {
-        // 클라이언트의 message 이벤트를 발생시킵니다. 
-        io.sockets.emit('message', data);
+        socket.get('room', function (error, room) {
+            io.sockets.in(room).emit('message', data);
+        });
     });
 
 	socket.on('setname',function(data){
@@ -36,7 +43,8 @@ io.sockets.on('connection', function (socket) {
 		});
 	});
 
-});*/
+});
+/*
 var fs = require('fs');
 var server = require('http').createServer();
 var io = require('socket.io').listen(server);
@@ -71,4 +79,4 @@ io.sockets.on('connection', function (socket) {
             io.sockets.in(room).emit('message', data);
         });
     });
-});
+});*/
