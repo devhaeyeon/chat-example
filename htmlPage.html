@@ -11,7 +11,7 @@
         // HTML 문서가 모두 준비되면
         $(document).ready(function () {
             // 변수를 선언합니다.
-            var socket = io.connect('http://pure-reef-5243.herokuapp.com/');
+            var socket = io.connect('http://haeyeonchat.herokuapp.com/');
             // 이벤트를 연결합니다.
             socket.on('message', function (data) {
                 // 추가할 문자열을 만듭니다.
@@ -30,15 +30,15 @@
 				//데이터 전달 받기
 				socket.on('responsename',function(data){
 				alert(data);
-            });
+				});
 
 			// 버튼을 클릭할 때
-            $('#button').click(function () {
-               /* socket.emit('message', {
+            $('button').click(function () {
+                socket.emit('message', {
                     name: $('#name').val(),
                     message: $('#message').val(),
                     date: new Date().toUTCString()
-                });*/
+                });
 				socket.emit('getname');
 				});
 
@@ -53,7 +53,7 @@
         <div data-role="content">
             <h3>Nick Name</h3>
             <input id="name" />
-            <a data-role="button" href="#chatpage" id="button">Start Chat</a>
+            <a data-role="button" href="#chatpage">Start Chat</a>
         </div>
     </div>
     <div data-role="page" id="chatpage">
