@@ -13,7 +13,7 @@ var server = require('http').createServer(function(req,res){
 
 	console.log('Server Running Start');
 
-});;
+});
 
 var io     = require('socket.io').listen(server);
 var nicklist = {};
