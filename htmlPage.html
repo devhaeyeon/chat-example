@@ -58,11 +58,23 @@
             // 소켓 이벤트를 연결합니다.
             socket.emit('join', room);
             socket.on('message', function (data) {
-                $('<p>' + data + '</p>').appendTo('body');
+               // 추가할 문자열을 만듭니다.
+                var output = '';
+                output += '<li>';
+                output += ' <h3>' + data.name + '</h3>';
+                output += ' <p>' + data.message + '</p>';
+                output += ' <p>' + data.date + '</p>';
+                output += '</li>';
+                // 문서 객체를 추가합니다.
+                $(output).prependTo('#content');
             });
             // 문서 객체 이벤트를 연결합니다.
             document.getElementById('button').onclick = function () {
-                socket.emit('message', 'socket.io room message');
+                socket.emit('message',{
+						name: $('#name').val(),
+						message: $('#message').val(),
+						date: new Date().toUTCString()
+					});
             };
         };
     </script>
