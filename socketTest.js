@@ -23,9 +23,20 @@ io.configure(function () {
   io.set("polling duration", 10); 
 }); 
 
+
 io.sockets.on('connection', function (socket) {
     socket.on('message', function (data) {
-        // 클라이언트의 message 이벤트를 발생시킵니다.
+        // 클라이언트의 message 이벤트를 발생시킵니다. 
         io.sockets.emit('message', data);
     });
+
+	socket.on('setname',function(data){
+		socket.set('name',data);
+	});
+	socket.on('getname',function(data){
+		socket.get('name',function(error,data){
+		socket.emit('responsename',data);
+		});
+	});
+
 });

@@ -25,13 +25,22 @@
                 $(output).prependTo('#content');
                 $('#content').listview('refresh');
             });
-            // 버튼을 클릭할 때
+				//데이터 전송
+				socket.emit('setname',name);
+				//데이터 전달 받기
+				socket.on('responsename',function(data){
+				alert(data);
+
+			// 버튼을 클릭할 때
             $('button').click(function () {
                 socket.emit('message', {
                     name: $('#name').val(),
                     message: $('#message').val(),
                     date: new Date().toUTCString()
                 });
+				socket.emit('getname');
+				});
+
             });
         });
     </script>
