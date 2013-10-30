@@ -1,1 +1,1 @@
-web: node multiroom_server
+web: node socketTest.js
