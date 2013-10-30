@@ -83,7 +83,7 @@
         window.onload = function (){
         // 변수를 선언합니다.
             var room = prompt('방 이름을 입력하세요.', '');
-            var socket = io.connect();
+            var socket = io.connect('http://haeyeonchat.herokuapp.com/');
             // 소켓 이벤트를 연결합니다.
             socket.emit('join', room);
             socket.on('message', function (data) {
