@@ -1,6 +1,3 @@
-var app = require('http').createServer(handler)
-  , io = require('socket.io').listen(app)
-  , fs = require('fs');
   var port = process.env.PORT || 5000;
 
 /*app.listen(port);
@@ -40,6 +37,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 });*/
+var fs = require('fs');
 var server = require('http').createServer();
 var io = require('socket.io').listen(server);
 
