@@ -69,8 +69,8 @@
 
             // 문서 객체 이벤트를 연결합니다.
             document.getElementById('nameBtn').onclick = function () {
-				
-				if($('#name').val()==="")
+				nick_name = $('#name').val();
+				if(nick_name==="")
 				{
 					alert('대화명을 입력해주세요.');
 				}
