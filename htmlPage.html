@@ -8,8 +8,7 @@
     <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        window.onload = function (){
-			function nameCheck()
+				function nameCheck()
 			{
 				if($('#name').val()==="")
 				{
@@ -22,6 +21,9 @@
 				});
 				}
 			}
+
+        window.onload = function (){
+
         // 변수를 선언합니다.
             var room = prompt('방 이름을 입력하세요.', '');
             var socket = io.connect('http://haeyeonchat.herokuapp.com/');
