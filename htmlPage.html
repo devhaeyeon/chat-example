@@ -8,20 +8,7 @@
     <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-				function nameCheck()
-			{
-				if($('#name').val()==="")
-				{
-					alert('대화명을 입력해주세요.');
-				}
-				else
-				{
-					socket.emit('systemIn',{
-					name : nick_name
-				});
-				}
-			}
-
+				
         window.onload = function (){
 
         // 변수를 선언합니다.
@@ -80,6 +67,21 @@
 			}
 		});
 
+            // 문서 객체 이벤트를 연결합니다.
+            document.getElementById('nameBtn').onclick = function () {
+				
+				if($('#name').val()==="")
+				{
+					alert('대화명을 입력해주세요.');
+				}
+				else
+				{
+					socket.emit('systemIn',{
+					name : nick_name
+				});
+				}
+
+            };
 
             // 문서 객체 이벤트를 연결합니다.
             document.getElementById('button').onclick = function () {
@@ -111,7 +113,7 @@
         <div data-role="content">
             <h3>Nick Name</h3>
             <input id="name" />
-            <a data-role="button" href="#chatpage" onClick="nameCheck()">Start Chat</a>
+           <button id="nameBtn">대화명 입력</button>
         </div>
     </div>
     <div data-role="page" id="chatpage">
