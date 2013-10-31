@@ -32,8 +32,8 @@ io.sockets.on('connection', function (socket) {
 			//최초 입장시 아이디/소켓코드 저장
 			nicklist[data.name] = socket.nickname = data.name;
 			nickidlist[data.name] = socket.id;
-			io.sockets.emit('systemIn',data);
-			io.sockets.emit('systemList',nicklist);
+			io.sockets.in(room).emit('systemIn',data);
+			io.sockets.in(room).emit('systemList',nicklist);
 		}
 	});
 
@@ -64,7 +64,7 @@ io.sockets.on('connection', function (socket) {
 		if(socket.nickname){
 			socket.broadcast.emit('systemOut',{name:socket.nickname});
 			delete nicklist[socket.nickname];
-			io.sockets.emit('systemList',nicklist);
+			io.sockets.in(room).emit('systemList',nicklist);
 		}
 	});
 
