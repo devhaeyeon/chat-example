@@ -26,6 +26,17 @@ io.configure(function () {
 }); 
 
 io.sockets.on('connection', function (socket) {
+	socket.on('systemIn',function(data){
+		if(data.name)
+		{
+			//최초 입장시 아이디/소켓코드 저장
+			nicklist[data.name] = socket.nickname = data.name;
+			nickidlist[data.name] = socket.id;
+			io.sockets.emit('systemIn',data);
+			io.sockets.emit('systemList',nicklist);
+		}
+	});
+
     // join 이벤트
     socket.on('join', function (data) {
         socket.join(data);
@@ -35,8 +46,26 @@ io.sockets.on('connection', function (socket) {
     // message 이벤트
     socket.on('message', function (data) {
         socket.get('room', function (error, room) {
-            io.sockets.in(room).emit('message', data);
-        });
+          if(data.type == 'public')
+		{
+			io.sockets.in(room).emit('message', data);
+        }
+		else
+		{
+			io.sockets.sockets[nickidlist[data.name]].in(room).emit('message',data);
+			io.sockets.sockets[nickidlist[data.type]].in(room).emit('message',data);
+		}
+		
+		});
     });
+
+	//퇴장 처리
+	socket.on('disconnect',function(){
+		if(socket.nickname){
+			socket.broadcast.emit('systemOut',{name:socket.nickname});
+			delete nicklist[socket.nickname];
+			io.sockets.emit('systemList',nicklist);
+		}
+	});
 
 });

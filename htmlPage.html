@@ -9,6 +9,19 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         window.onload = function (){
+			function nameCheck()
+			{
+				if($('#name').val()==="")
+				{
+					alert('대화명을 입력해주세요.');
+				}
+				else
+				{
+					socket.emit('systemIn',{
+					name : nick_name
+				});
+				}
+			}
         // 변수를 선언합니다.
             var room = prompt('방 이름을 입력하세요.', '');
             var socket = io.connect('http://haeyeonchat.herokuapp.com/');
@@ -26,6 +39,46 @@
                 $(output).prependTo('#content');
 				$('#content').listview('refresh');
             });
+
+			//귓속말 이벤트 
+			socket.on('systemList',function(data){
+			$("#nick_lst").empty();
+			$("#nick_lst").append('<option value="public">모두</option>');
+			for (var i in data) {
+				$("#nick_lst").append('<option value="'+data[i]+'">'+data[i]+'</option>');
+			}
+		});
+
+		//입장 이벤트
+		socket.on('systemIn',function(data){
+                var output = '';
+                output += '<li>';
+                output += ' <h3>' + data.name + '님이 입장하셨습니다.</h3>';
+                output += '</li>';
+                // 문서 객체를 추가합니다.
+                $(output).prependTo('#content');
+				$('#content').listview('refresh');
+		});
+
+		//퇴장 이벤트
+		socket.on('systemOut',function(data){
+                var output = '';
+                output += '<li>';
+                output += ' <h3>' + data.name + '님이 퇴장하셨습니다.</h3>';
+                output += '</li>';
+                // 문서 객체를 추가합니다.
+                $(output).prependTo('#content');
+				$('#content').listview('refresh');
+		});
+
+			//엔터키
+		$("#message").keypress(function(ent){
+			if(ent.which == 13){
+				$("#button").click();
+			}
+		});
+
+
             // 문서 객체 이벤트를 연결합니다.
             document.getElementById('button').onclick = function () {
 				
@@ -36,6 +89,7 @@
 				else
 				{
 					socket.emit('message', {
+						type : $("#nick_lst").val(),
 						name: $('#name').val(),
 						message: $('#message').val(),
 						date: new Date().toUTCString()
@@ -55,7 +109,7 @@
         <div data-role="content">
             <h3>Nick Name</h3>
             <input id="name" />
-            <a data-role="button" href="#chatpage">Start Chat</a>
+            <a data-role="button" href="#chatpage" onClick="nameCheck()">Start Chat</a>
         </div>
     </div>
     <div data-role="page" id="chatpage">
@@ -63,7 +117,10 @@
             <h1>Socket.io Chat</h1>
         </div>
         <div data-role="content">
-            <input id="message" />
+            <select name="nick_lst" id="nick_lst">
+					<option value="poblic">모두</option>
+				</select>
+			<input id="message" />
             <button id="button">입력</button>
             <ul id="content" data-role="listview" data-inset="true">
             </ul>
