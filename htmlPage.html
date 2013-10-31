@@ -76,6 +76,7 @@
 				}
 				else
 				{
+					$.mobile.changePage("#chatpage", { transition: "slideup"});
 					socket.emit('systemIn',{
 					name : nick_name
 				});
